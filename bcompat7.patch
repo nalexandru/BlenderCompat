@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 297e32bd67e..bafba76704d 100644
+index 91ac63d5e50..5697f473236 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -24,6 +24,10 @@
@@ -14,7 +14,7 @@ index 297e32bd67e..bafba76704d 100644
    if(NOT DEFINED WITH_IN_SOURCE_BUILD)
      message(FATAL_ERROR
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index c495ee6eee9..82b0b0809b4 100644
+index c495ee6eee9..ee875ec876b 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
 @@ -36,6 +36,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
@@ -42,7 +42,16 @@ index c495ee6eee9..82b0b0809b4 100644
  		)
  	)
  ) else (
-@@ -58,4 +76,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
+@@ -47,6 +65,8 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
+ 			"%SVN%" update %BUILD_VS_LIBDIR%
+ 		)
+ 	)
++
++	"%SVN%" update %BUILD_VS_LIBDIR%/bcompat7
+ )
+ 
+ if NOT EXIST %BUILD_VS_LIBDIR% (
+@@ -58,4 +78,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
  		echo This is most likely caused by svn.exe not being available.
  	)
  	exit /b 1
