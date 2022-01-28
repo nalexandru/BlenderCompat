@@ -7,7 +7,9 @@ This repository contains a compatibility DLL for running Blender 3.0 on Windows 
 
 ## Binaries
 
-Binaries compiled from the same commit as the official release are available on the [Releases](https://github.com/nalexandru/BlenderCompat/releases) page.
+Stable releases, compiled from the same commit as the official releases, are available on the [Releases](https://github.com/nalexandru/BlenderCompat/releases) page.
+
+More recent builds, including pre-release versions, are provided by Loriem: https://www.dropbox.com/sh/eufffe60fvtr9mz/AAA0YtogOoJTKggWtgAXRyXJa?dl=0
 
 ## Building Blender for Windows 7
 
