@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 91ac63d5e50..5697f473236 100644
+index 75f5795db68..4ac83261b05 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -24,6 +24,10 @@
+@@ -6,6 +6,10 @@
  # all out-of-source builds will use the CMakeCache.txt file there and even
  # build the libs and objects in it.
  
@@ -14,26 +14,26 @@ index 91ac63d5e50..5697f473236 100644
    if(NOT DEFINED WITH_IN_SOURCE_BUILD)
      message(FATAL_ERROR
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index c495ee6eee9..ee875ec876b 100644
+index e8c04fb3258..1ab6d6a00ad 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
-@@ -36,6 +36,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
+@@ -35,6 +35,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
  				echo.
  				exit /b 1
  			)
-+			
++
 +:RETRYBCOMPAT
 +			"%SVN%" checkout https://github.com/nalexandru/BlenderCompat/trunk/bin %BUILD_VS_LIBDIR%/bcompat7
 +			if errorlevel 1 (
 +				set /p LibRetry= "Error during download, retry? y/n"
 +				if /I "!LibRetry!"=="Y" (
 +					cd %BUILD_VS_LIBDIR%
-+					"%SVN%" cleanup 
++					"%SVN%" cleanup
 +					cd %BLENDER_DIR%
 +					goto RETRYBCOMPAT
 +				)
 +				echo.
-+				echo Error: Download of external libraries failed. 
++				echo Error: Download of external libraries failed.
 +				echo This is needed for building, please manually run 'svn cleanup' and 'svn update' in
 +				echo %BUILD_VS_LIBDIR% , until this is resolved you CANNOT make a successful blender build
 +				echo.
@@ -42,7 +42,7 @@ index c495ee6eee9..ee875ec876b 100644
  		)
  	)
  ) else (
-@@ -47,6 +65,8 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
+@@ -46,6 +64,8 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
  			"%SVN%" update %BUILD_VS_LIBDIR%
  		)
  	)
@@ -51,18 +51,11 @@ index c495ee6eee9..ee875ec876b 100644
  )
  
  if NOT EXIST %BUILD_VS_LIBDIR% (
-@@ -58,4 +78,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 		echo This is most likely caused by svn.exe not being available.
- 	)
- 	exit /b 1
--)
-\ No newline at end of file
-+)
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index a4b32fac9fc..7fa8868c571 100644
+index d17afad0918..1e6f5a1cf7b 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -51,6 +51,9 @@ if(WITH_TBB)
+@@ -32,6 +32,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
@@ -72,7 +65,7 @@ index a4b32fac9fc..7fa8868c571 100644
  if(WIN32)
    blender_include_dirs(../../intern/utfconv)
  endif()
-@@ -962,6 +965,12 @@ elseif(WIN32)
+@@ -995,6 +998,12 @@ elseif(WIN32)
        DESTINATION ${TARGETDIR_VER}/python/lib/site-packages
      )
    endif()
