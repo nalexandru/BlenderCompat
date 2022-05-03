@@ -3,7 +3,7 @@ Windows 7 support for Blender 3.x
 
 ## Description
 
-This repository contains a compatibility DLL for running Blender 3.0 on Windows 7 and a patch to modify the Blender source to use it. It does this by prepending `bcompat7` to the list of libraries so it uses the entry points in it instead of those in the system libraries.
+This repository contains a compatibility DLL for running Blender 3.x on Windows 7 and a patch to modify the Blender source to use it. It does this by prepending `bcompat7` to the list of libraries so it uses the entry points in it instead of those in the system libraries.
 
 ## Binaries
 

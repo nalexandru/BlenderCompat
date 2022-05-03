@@ -23,3 +23,14 @@ GetPointerPenInfoHistory(_In_ UINT32 pointerId, _Inout_ UINT32 *entriesCount, _O
 	SetLastError(ERROR_NO_DATA);
 	return FALSE;
 }
+
+__declspec(dllexport) HANDLE WINAPI
+CreateFile2(_In_ LPCWSTR lpFileName, _In_ DWORD dwDesiredAccess, _In_ DWORD dwShareMode, _In_ DWORD dwCreationDisposition,
+	_In_opt_ LPCREATEFILE2_EXTENDED_PARAMETERS pCreateExParams)
+{
+	if (pCreateExParams)
+		return CreateFileW(lpFileName, dwDesiredAccess, dwShareMode, pCreateExParams->lpSecurityAttributes, dwCreationDisposition, 
+			pCreateExParams->dwFileAttributes & pCreateExParams->dwFileFlags, pCreateExParams->hTemplateFile);
+	else
+		return CreateFileW(lpFileName, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, 0, NULL);
+}
