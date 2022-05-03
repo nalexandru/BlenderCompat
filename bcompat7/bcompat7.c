@@ -30,7 +30,7 @@ CreateFile2(_In_ LPCWSTR lpFileName, _In_ DWORD dwDesiredAccess, _In_ DWORD dwSh
 {
 	if (pCreateExParams)
 		return CreateFileW(lpFileName, dwDesiredAccess, dwShareMode, pCreateExParams->lpSecurityAttributes, dwCreationDisposition, 
-			pCreateExParams->dwFileAttributes & pCreateExParams->dwFileFlags, pCreateExParams->hTemplateFile);
+			pCreateExParams->dwFileAttributes | pCreateExParams->dwFileFlags | pCreateExParams->dwSecurityQosFlags, pCreateExParams->hTemplateFile);
 	else
 		return CreateFileW(lpFileName, dwDesiredAccess, dwShareMode, NULL, dwCreationDisposition, 0, NULL);
 }
