@@ -1,5 +1,8 @@
 #include <Windows.h>
 
+// The pointer messages (WM_POINTER*) do not exist in Windows 7.
+// Because of this, it's unlikely that the GetPointer* functions will be called.
+
 __declspec(dllexport) BOOL WINAPI
 GetPointerType(_In_ UINT32 pointerId, _Out_ POINTER_INPUT_TYPE *pointerType)
 {

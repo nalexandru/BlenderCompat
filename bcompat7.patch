@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 75f5795db68..4ac83261b05 100644
+index dd9ed51b68d..ba485a6bc3a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -6,6 +6,10 @@
@@ -14,7 +14,7 @@ index 75f5795db68..4ac83261b05 100644
    if(NOT DEFINED WITH_IN_SOURCE_BUILD)
      message(FATAL_ERROR
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index e8c04fb3258..1ab6d6a00ad 100644
+index e8c04fb3258..6c0283e838e 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
 @@ -35,6 +35,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
@@ -51,8 +51,38 @@ index e8c04fb3258..1ab6d6a00ad 100644
  )
  
  if NOT EXIST %BUILD_VS_LIBDIR% (
+diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
+index 98998e2e902..6ca98af96fb 100644
+--- a/source/blender/gpu/opengl/gl_backend.cc
++++ b/source/blender/gpu/opengl/gl_backend.cc
+@@ -295,8 +295,23 @@ static void detect_workarounds()
+    * polaris platform. Keeping legacy platforms around just in case.
+    */
+   if (GPU_type_matches(GPU_DEVICE_ATI, GPU_OS_ANY, GPU_DRIVER_OFFICIAL)) {
+-    const Vector<std::string> matches = {
+-        "RX550/550", "(TM) 520", "(TM) 530", "(TM) 535", "R5", "R7", "R9"};
++    const Vector<std::string> matches = {"RX 460",
++                                         "RX 470",
++                                         "RX 480",
++                                         "RX 490",
++                                         "RX 560",
++                                         "RX 560X",
++                                         "RX 570",
++                                         "RX 580",
++                                         "RX 580X",
++                                         "RX 590",
++                                         "RX550/550",
++                                         "(TM) 520",
++                                         "(TM) 530",
++                                         "(TM) 535",
++                                         "R5",
++                                         "R7",
++                                         "R9"};
+ 
+     if (match_renderer(renderer, matches)) {
+       GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index d17afad0918..1e6f5a1cf7b 100644
+index 7457358698d..1b06b28f538 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
 @@ -32,6 +32,9 @@ if(WITH_TBB)
@@ -65,7 +95,7 @@ index d17afad0918..1e6f5a1cf7b 100644
  if(WIN32)
    blender_include_dirs(../../intern/utfconv)
  endif()
-@@ -995,6 +998,12 @@ elseif(WIN32)
+@@ -1011,6 +1014,12 @@ elseif(WIN32)
        DESTINATION ${TARGETDIR_VER}/python/lib/site-packages
      )
    endif()
