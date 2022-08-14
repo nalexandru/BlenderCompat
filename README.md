@@ -13,7 +13,7 @@ More recent builds, including pre-release versions, are provided by Loriem: http
 
 ## Changes compared to the official release
 
-* Reverted https://developer.blender.org/T97828 due to rendering issues on AMD Polaris GPUs (issues #18, #19)
+* Reverted https://developer.blender.org/T97828 due to rendering issues on AMD Polaris GPUs (issues [#18](https://github.com/nalexandru/BlenderCompat/issues/18), [#19](https://github.com/nalexandru/BlenderCompat/issues/19))
 
 ## Building Blender for Windows 7
 
