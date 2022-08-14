@@ -11,6 +11,10 @@ Stable releases, compiled from the same commit as the official releases, are ava
 
 More recent builds, including pre-release versions, are provided by Loriem: https://www.dropbox.com/sh/eufffe60fvtr9mz/AAA0YtogOoJTKggWtgAXRyXJa?dl=0
 
+## Changes compared to the official release
+
+* Reverted https://developer.blender.org/T97828 due to rendering issues on AMD Polaris GPUs (issues #18, #19)
+
 ## Building Blender for Windows 7
 
 Build Blender following these instructions: https://wiki.blender.org/wiki/Building_Blender/Windows with a small change.
