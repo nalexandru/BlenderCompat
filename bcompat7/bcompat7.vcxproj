@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bcompat7.c" />
-    <ClCompile Include="scaling.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
