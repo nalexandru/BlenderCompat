@@ -1,0 +1,69 @@
+diff --git a/build.cmd b/build.cmd
+new file mode 100644
+index 00000000..68bcebf7
+--- /dev/null
++++ b/build.cmd
+@@ -0,0 +1,17 @@
++set BLIBS=%1
++mkdir build
++cd build
++cmake ^
++	-G "NMake Makefiles" ^
++	-DCMAKE_BUILD_TYPE=Release ^
++	-DZLIB_LIBRARY=%BLIBS%\zlib\lib\libz_st.lib ^
++	-DZLIB_INCLUDE_DIR=%BLIBS%\zlib\include ^
++	-DBUILD_TESTING=OFF ^
++	-DOPENEXR_BUILD_BOTH_STATIC_SHARED=OFF ^
++	-DBUILD_SHARED_LIBS=ON ^
++	-DOPENEXR_INSTALL_TOOLS=OFF ^
++	-DOPENEXR_INSTALL_EXAMPLES=OFF ^
++	-DImath_DIR=%BLIBS%\imath\lib\cmake\Imath ^
++	-DOPENEXR_LIB_SUFFIX= ^
++	..
++nmake
+diff --git a/src/lib/OpenEXRCore/internal_win32_file_impl.h b/src/lib/OpenEXRCore/internal_win32_file_impl.h
+index 82c7d65a..ed88e6a6 100644
+--- a/src/lib/OpenEXRCore/internal_win32_file_impl.h
++++ b/src/lib/OpenEXRCore/internal_win32_file_impl.h
+@@ -316,10 +316,6 @@ default_init_read_file (struct _internal_exr_context* file)
+     wcFn = widen_filename (file, file->filename.str);
+     if (wcFn)
+     {
+-#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+-        fd = CreateFile2 (
+-            wcFn, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, NULL);
+-#else
+         fd = CreateFileW (
+             wcFn,
+             GENERIC_READ,
+@@ -328,7 +324,6 @@ default_init_read_file (struct _internal_exr_context* file)
+             OPEN_EXISTING,
+             FILE_ATTRIBUTE_NORMAL, /* TBD: use overlapped? | FILE_FLAG_OVERLAPPED */
+             NULL);
+-#endif
+         file->free_fn (wcFn);
+ 
+         if (fd == INVALID_HANDLE_VALUE)
+@@ -363,14 +358,6 @@ default_init_write_file (struct _internal_exr_context* file)
+     wcFn = widen_filename (file, outfn);
+     if (wcFn)
+     {
+-#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+-        fd = CreateFile2 (
+-            wcFn,
+-            GENERIC_WRITE | DELETE,
+-            0, /* no sharing */
+-            CREATE_ALWAYS,
+-            NULL);
+-#else
+         fd = CreateFileW (
+             wcFn,
+             GENERIC_WRITE | DELETE,
+@@ -379,7 +366,6 @@ default_init_write_file (struct _internal_exr_context* file)
+             CREATE_ALWAYS,
+             FILE_ATTRIBUTE_NORMAL, /* TBD: use overlapped? | FILE_FLAG_OVERLAPPED */
+             NULL);
+-#endif
+         file->free_fn (wcFn);
+ 
+         if (fd == INVALID_HANDLE_VALUE)
