@@ -1,9 +1,9 @@
 diff --git a/build.cmd b/build.cmd
 new file mode 100644
-index 00000000..68bcebf7
+index 00000000..f4a79b1c
 --- /dev/null
 +++ b/build.cmd
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,22 @@
 +set BLIBS=%1
 +mkdir build
 +cd build
@@ -21,6 +21,11 @@ index 00000000..68bcebf7
 +	-DOPENEXR_LIB_SUFFIX= ^
 +	..
 +nmake
++copy bin\Iex.dll %BLIBS%\openexr\bin\Iex.dll
++copy bin\IlmThread.dll %BLIBS%\openexr\bin\IlmThread.dll
++copy bin\OpenEXR.dll %BLIBS%\openexr\bin\OpenEXR.dll
++copy bin\OpenEXRCore.dll %BLIBS%\openexr\bin\OpenEXRCore.dll
++copy bin\OpenEXRUtil.dll %BLIBS%\openexr\bin\OpenEXRUtil.dll
 diff --git a/src/lib/OpenEXRCore/internal_win32_file_impl.h b/src/lib/OpenEXRCore/internal_win32_file_impl.h
 index 82c7d65a..ed88e6a6 100644
 --- a/src/lib/OpenEXRCore/internal_win32_file_impl.h
