@@ -95,8 +95,8 @@ index caaffa283ba..de4459ee95f 100644
  if(WIN32)
    list(APPEND INC ../../intern/utfconv)
  endif()
-@@ -1083,6 +1086,12 @@ elseif(WIN32)
-       DESTINATION ${TARGETDIR_LIB}
+@@ -1285,6 +1287,12 @@ elseif(WIN32)
+       DESTINATION ${TARGETDIR_EXE}
      )
    endif()
 +
