@@ -1,5 +1,5 @@
 # BlenderCompat
-Windows 7 support for Blender 3.x
+Windows 7 support for Blender 3.x and newer
 
 ## Description
 
