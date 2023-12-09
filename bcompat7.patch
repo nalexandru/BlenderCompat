@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 408cf819ce8..0104afdea6e 100644
+index 212aa7dffd4..2453efe8950 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -4,6 +4,10 @@
+@@ -5,6 +5,10 @@
  # -----------------------------------------------------------------------------
  # Early Initialization
  
@@ -14,7 +14,7 @@ index 408cf819ce8..0104afdea6e 100644
  # all out-of-source builds will use the CMakeCache.txt file there and even
  # build the libs and objects in it.
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index e8c04fb3258..6c0283e838e 100644
+index e8c04fb3258..4f4b605cc5d 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
 @@ -35,6 +35,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
@@ -51,11 +51,18 @@ index e8c04fb3258..6c0283e838e 100644
  )
  
  if NOT EXIST %BUILD_VS_LIBDIR% (
+@@ -57,4 +77,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
+ 		echo This is most likely caused by svn.exe not being available.
+ 	)
+ 	exit /b 1
+-)
+\ No newline at end of file
++)
 diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
-index ffbba7dcd8c..0d49863b11a 100644
+index f02f3386a4d..43425759989 100644
 --- a/source/blender/gpu/opengl/gl_backend.cc
 +++ b/source/blender/gpu/opengl/gl_backend.cc
-@@ -302,8 +302,23 @@ static void detect_workarounds()
+@@ -387,8 +387,23 @@ static void detect_workarounds()
     * polaris platform. Keeping legacy platforms around just in case.
     */
    if (GPU_type_matches(GPU_DEVICE_ATI, GPU_OS_ANY, GPU_DRIVER_OFFICIAL)) {
@@ -82,10 +89,10 @@ index ffbba7dcd8c..0d49863b11a 100644
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index caaffa283ba..de4459ee95f 100644
+index 66943111380..8c5d6faefd1 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -34,6 +34,9 @@ if(WITH_TBB)
+@@ -40,6 +40,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
@@ -95,9 +102,9 @@ index caaffa283ba..de4459ee95f 100644
  if(WIN32)
    list(APPEND INC ../../intern/utfconv)
  endif()
-@@ -1285,6 +1287,12 @@ elseif(WIN32)
-       DESTINATION ${TARGETDIR_EXE}
-     )
+@@ -1400,6 +1403,12 @@ elseif(WIN32)
+   if(PLATFORM_BUNDLED_LIBRARIES)
+     windows_process_platform_bundled_libraries("${PLATFORM_BUNDLED_LIBRARIES}")
    endif()
 +
 +  install(
