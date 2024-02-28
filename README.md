@@ -5,6 +5,9 @@ Windows 7 support for Blender 3.x and newer
 
 This repository contains a compatibility DLL for running Blender 3.x on Windows 7 and a patch to modify the Blender source to use it. It does this by prepending `bcompat7` to the list of libraries so it uses the entry points in it instead of those in the system libraries.
 
+### Addons
+In order for addons that require `numpy` to work, you need to install the [Windows 7 May 2016 rollup (KB3125574)](https://www.catalog.update.microsoft.com/Search.aspx?q=KB3125574).
+
 ## Binaries
 
 Stable releases, compiled from the same commit as the official releases, are available on the [Releases](https://github.com/nalexandru/BlenderCompat/releases) page.
