@@ -28,6 +28,7 @@ Before building Blender (after `make update`) you must build them. Clone their r
 The patches were made against version 3.2.2 of OpenEXR and version 24.03 of OpenUSD.
 
 [OpenEXR repository](https://github.com/AcademySoftwareFoundation/openexr)
+
 [OpenUSD repository](https://github.com/PixarAnimationStudios/OpenUSD)
 
 Build Blender following these instructions: https://wiki.blender.org/wiki/Building_Blender/Windows with a small change.
