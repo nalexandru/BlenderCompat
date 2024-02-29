@@ -1,0 +1,110 @@
+diff --git a/build.cmd b/build.cmd
+new file mode 100644
+index 000000000..605fbaecb
+--- /dev/null
++++ b/build.cmd
+@@ -0,0 +1,51 @@
++set BLIBS=%1
++mkdir build
++cd build
++cmake ^
++	-G Ninja ^
++	-DCMAKE_INSTALL_PREFIX=%BLIBS%/usd ^
++	-DCMAKE_BUILD_TYPE=Release ^
++	-DCMAKE_CXX_FLAGS="/DOIIO_STATIC_DEFINE /DOSL_STATIC_DEFINE" ^
++	-D_PXR_CXX_DEFINITIONS=/DBOOST_ALL_NO_LIB ^
++	-DCMAKE_SHARED_LINKER_FLAGS_INIT=/LIBPATH:%BLIBS%/tbb/lib ^
++	-DPython_FIND_REGISTRY=NEVER ^
++	-DPython3_ROOT_DIR=%BLIBS%/python/311 ^
++	-DPYTHON_INCLUDE_DIR=%BLIBS%/python/311/include ^
++	-DPython3_EXECUTABLE=%BLIBS%/python/311/bin/python.exe ^
++	-DOPENSUBDIV_ROOT_DIR=%BLIBS%/opensubdiv ^
++	-DOpenImageIO_ROOT=%BLIBS%/openimageio ^
++	-DMaterialX_ROOT=%BLIBS%/materialx ^
++	-DOPENEXR_LIBRARIES=%BLIBS%/imath/lib/Imath.lib ^
++	-DOPENEXR_INCLUDE_DIR=%BLIBS%/imath/include ^
++	-DImath_DIR=%BLIBS%/imath ^
++	-DOPENVDB_LOCATION=%BLIBS%/openvdb ^
++	-DPXR_ENABLE_PYTHON_SUPPORT=ON ^
++	-DPXR_USE_PYTHON_3=ON ^
++	-DPXR_BUILD_IMAGING=ON ^
++	-DPXR_BUILD_TESTS=OFF ^
++	-DPXR_BUILD_EXAMPLES=OFF ^
++	-DPXR_BUILD_TUTORIALS=OFF ^
++	-DPXR_BUILD_USDVIEW=OFF ^
++	-DPXR_ENABLE_HDF5_SUPPORT=OFF ^
++	-DPXR_ENABLE_MATERIALX_SUPPORT=ON ^
++	-DPXR_ENABLE_OPENVDB_SUPPORT=ON ^
++	-DPYTHON_EXECUTABLE=%BLIBS%/python/311/bin/python.exe ^
++	-DPython3_EXECUTABLE=%BLIBS%/python/311/bin/python.exe ^
++	-DPXR_BUILD_MONOLITHIC=ON ^
++	-DPXR_ENABLE_OSL_SUPPORT=OFF ^
++	-DPXR_ENABLE_GL_SUPPORT=ON ^
++	-DPXR_BUILD_OPENIMAGEIO_PLUGIN=ON ^
++	-DPXR_BUILD_OPENCOLORIO_PLUGIN=OFF ^
++	-DPXR_ENABLE_PTEX_SUPPORT=OFF ^
++	-DPXR_BUILD_USD_TOOLS=OFF ^
++	-DCMAKE_DEBUG_POSTFIX=_d ^
++	-DBUILD_SHARED_LIBS=ON ^
++	-DTBB_INCLUDE_DIR=%BLIBS%/tbb/include ^
++	-DTBB_LIBRARY=%BLIBS%/tbb/lib ^
++	-DTbb_TBB_LIBRARY=%BLIBS%/tbb/lib/tbb.lib ^
++	-DTBB_tbb_LIBRARY_RELEASE=%BLIBS%/tbb/lib/tbb.lib ^
++	-DBoost_INCLUDE_DIR=%BLIBS%/boost/include ^
++	..
++ninja
++ninja install
++cd ..
+diff --git a/pxr/base/tf/pxrPEGTL/pegtl.h b/pxr/base/tf/pxrPEGTL/pegtl.h
+index 300466e05..41fb86e1c 100644
+--- a/pxr/base/tf/pxrPEGTL/pegtl.h
++++ b/pxr/base/tf/pxrPEGTL/pegtl.h
+@@ -8635,17 +8635,6 @@ namespace tao
+                SetLastError( 0 );
+                std::wstring ws( m_source, m_source + strlen( m_source ) );
+ 
+-#if( _WIN32_WINNT >= 0x0602 )
+-               const HANDLE handle = ::CreateFile2( ws.c_str(),
+-                                                    GENERIC_READ,
+-                                                    FILE_SHARE_READ,
+-                                                    OPEN_EXISTING,
+-                                                    nullptr );
+-               if( handle != INVALID_HANDLE_VALUE ) {
+-                  return handle;
+-               }
+-               TAO_PEGTL_THROW_INPUT_WIN32_ERROR( "CreateFile2() failed opening file " << m_source << " for reading" );
+-#else
+                const HANDLE handle = ::CreateFileW( ws.c_str(),
+                                                     GENERIC_READ,
+                                                     FILE_SHARE_READ,
+@@ -8657,7 +8646,6 @@ namespace tao
+                   return handle;
+                }
+                TAO_PEGTL_THROW_INPUT_WIN32_ERROR( "CreateFileW() failed opening file " << m_source << " for reading" );
+-#endif
+             }
+          };
+ 
+diff --git a/pxr/imaging/hio/OpenEXR/OpenEXRCore/internal_win32_file_impl.h b/pxr/imaging/hio/OpenEXR/OpenEXRCore/internal_win32_file_impl.h
+index cda37161d..826035bab 100644
+--- a/pxr/imaging/hio/OpenEXR/OpenEXRCore/internal_win32_file_impl.h
++++ b/pxr/imaging/hio/OpenEXR/OpenEXRCore/internal_win32_file_impl.h
+@@ -316,10 +316,6 @@ default_init_read_file (struct _internal_exr_context* file)
+     wcFn = widen_filename (file, file->filename.str);
+     if (wcFn)
+     {
+-#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+-        fd = CreateFile2 (
+-            wcFn, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, NULL);
+-#else
+         fd = CreateFileW (
+             wcFn,
+             GENERIC_READ,
+@@ -328,7 +324,6 @@ default_init_read_file (struct _internal_exr_context* file)
+             OPEN_EXISTING,
+             FILE_ATTRIBUTE_NORMAL, /* TBD: use overlapped? | FILE_FLAG_OVERLAPPED */
+             NULL);
+-#endif
+         file->free_fn (wcFn);
+ 
+         if (fd == INVALID_HANDLE_VALUE)

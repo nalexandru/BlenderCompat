@@ -1,14 +1,17 @@
 diff --git a/build.cmd b/build.cmd
 new file mode 100644
-index 00000000..f4a79b1c
+index 00000000..0c367fb3
 --- /dev/null
 +++ b/build.cmd
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,23 @@
 +set BLIBS=%1
 +mkdir build
 +cd build
 +cmake ^
-+	-G "NMake Makefiles" ^
++	-G Ninja ^
++	-DCMAKE_INSTALL_PREFIX=%BLIBS%/openexr ^
++	-DCMAKE_BUILD_TYPE=Release ^
++	-DCMAKE_CXX_STANDARD_LIBRARIES="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib psapi.lib" ^
 +	-DCMAKE_BUILD_TYPE=Release ^
 +	-DZLIB_LIBRARY=%BLIBS%\zlib\lib\libz_st.lib ^
 +	-DZLIB_INCLUDE_DIR=%BLIBS%\zlib\include ^
@@ -18,16 +21,54 @@ index 00000000..f4a79b1c
 +	-DOPENEXR_INSTALL_TOOLS=OFF ^
 +	-DOPENEXR_INSTALL_EXAMPLES=OFF ^
 +	-DImath_DIR=%BLIBS%\imath\lib\cmake\Imath ^
++	-Dlibdeflate_DIR=%BLIBS%\deflate\lib\cmake\libdeflate ^
 +	-DOPENEXR_LIB_SUFFIX= ^
 +	..
-+nmake
-+copy bin\Iex.dll %BLIBS%\openexr\bin\Iex.dll
-+copy bin\IlmThread.dll %BLIBS%\openexr\bin\IlmThread.dll
-+copy bin\OpenEXR.dll %BLIBS%\openexr\bin\OpenEXR.dll
-+copy bin\OpenEXRCore.dll %BLIBS%\openexr\bin\OpenEXRCore.dll
-+copy bin\OpenEXRUtil.dll %BLIBS%\openexr\bin\OpenEXRUtil.dll
++ninja
++ninja install
++cd ..
+diff --git a/cmake/OpenEXRSetup.cmake b/cmake/OpenEXRSetup.cmake
+index ef5c6c08..3eddfeb1 100644
+--- a/cmake/OpenEXRSetup.cmake
++++ b/cmake/OpenEXRSetup.cmake
+@@ -160,14 +160,22 @@ set(OPENEXR_DEFLATE_TAG "v1.18" CACHE STRING "Tag to use for libdeflate source r
+ if(NOT OPENEXR_FORCE_INTERNAL_DEFLATE)
+   #TODO: ^^ Release should not clone from main, this is a place holder
+   set(CMAKE_IGNORE_PATH "${CMAKE_CURRENT_BINARY_DIR}/_deps/deflate-src/config;${CMAKE_CURRENT_BINARY_DIR}/_deps/deflate-build/config")
+-  include(FindPkgConfig)
+-  pkg_check_modules(deflate IMPORTED_TARGET GLOBAL libdeflate)
+-  set(CMAKE_IGNORE_PATH)
+-  if (deflate_FOUND)
+-    message(STATUS "Using libdeflate from ${deflate_LINK_LIBRARIES}")
++  find_package(libdeflate CONFIG)
++  if(libdeflate_FOUND)
++    message(STATUS "Using libdeflate from ${libdeflate_DIR}")
++  else()
++    include(FindPkgConfig)
++    pkg_check_modules(deflate IMPORTED_TARGET GLOBAL libdeflate)
++    set(CMAKE_IGNORE_PATH)
++    if (deflate_FOUND)
++      message(STATUS "Using libdeflate from ${deflate_LINK_LIBRARIES}")
++    endif()
+   endif()
+ endif()
+ 
++if(libdeflate_FOUND)
++  set(EXR_DEFLATE_LIB libdeflate::libdeflate_static)
++else()
+ if(NOT TARGET PkgConfig::deflate AND NOT deflate_FOUND)
+   if(OPENEXR_FORCE_INTERNAL_DEFLATE)
+     message(STATUS "libdeflate forced internal, installing from ${OPENEXR_DEFLATE_REPO} (${OPENEXR_DEFLATE_TAG})")
+@@ -224,6 +232,7 @@ else()
+   endif()
+   set(EXR_DEFLATE_SOURCES)
+ endif()
++endif()
+ 
+ #######################################
+ # Find or install Imath
 diff --git a/src/lib/OpenEXRCore/internal_win32_file_impl.h b/src/lib/OpenEXRCore/internal_win32_file_impl.h
-index 82c7d65a..ed88e6a6 100644
+index cda37161..fe7a1165 100644
 --- a/src/lib/OpenEXRCore/internal_win32_file_impl.h
 +++ b/src/lib/OpenEXRCore/internal_win32_file_impl.h
 @@ -316,10 +316,6 @@ default_init_read_file (struct _internal_exr_context* file)

@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 212aa7dffd4..2453efe8950 100644
+index 603f828b718..29ce6c3ac94 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -5,6 +5,10 @@
@@ -14,16 +14,16 @@ index 212aa7dffd4..2453efe8950 100644
  # all out-of-source builds will use the CMakeCache.txt file there and even
  # build the libs and objects in it.
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index e8c04fb3258..4f4b605cc5d 100644
+index 8c92ac72aa8..a1e811794f9 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
-@@ -35,6 +35,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 				echo.
- 				exit /b 1
- 			)
+@@ -46,6 +46,24 @@ if NOT EXIST "%BUILD_VS_LIBDIR%\.git" (
+            exit /b 1
+         )
+ 	)
 +
 +:RETRYBCOMPAT
-+			"%SVN%" checkout https://github.com/nalexandru/BlenderCompat/trunk/bin %BUILD_VS_LIBDIR%/bcompat7
++			git clone git@github.com:nalexandru/BlenderCompat.git %BUILD_VS_LIBDIR%/bcompat7
 +			if errorlevel 1 (
 +				set /p LibRetry= "Error during download, retry? y/n"
 +				if /I "!LibRetry!"=="Y" (
@@ -39,76 +39,51 @@ index e8c04fb3258..4f4b605cc5d 100644
 +				echo.
 +				exit /b 1
 +			)
- 		)
- 	)
  ) else (
-@@ -46,6 +64,8 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 			"%SVN%" update %BUILD_VS_LIBDIR%
- 		)
- 	)
-+
-+	"%SVN%" update %BUILD_VS_LIBDIR%/bcompat7
- )
- 
- if NOT EXIST %BUILD_VS_LIBDIR% (
-@@ -57,4 +77,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 		echo This is most likely caused by svn.exe not being available.
- 	)
- 	exit /b 1
--)
-\ No newline at end of file
-+)
+ 	if NOT EXIST %PYTHON% (
+ 		if not "%GIT%"=="" (
+diff --git a/lib/windows_x64 b/lib/windows_x64
+--- a/lib/windows_x64
++++ b/lib/windows_x64
+@@ -1 +1 @@
+-Subproject commit 71e6832c48d25b4929bcdfc1637ababab843e551
++Subproject commit 71e6832c48d25b4929bcdfc1637ababab843e551-dirty
 diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
-index f02f3386a4d..43425759989 100644
+index 8cad6fdbe06..5de1216245c 100644
 --- a/source/blender/gpu/opengl/gl_backend.cc
 +++ b/source/blender/gpu/opengl/gl_backend.cc
-@@ -387,8 +387,23 @@ static void detect_workarounds()
-    * polaris platform. Keeping legacy platforms around just in case.
+@@ -374,7 +374,9 @@ static void detect_workarounds()
     */
    if (GPU_type_matches(GPU_DEVICE_ATI, GPU_OS_ANY, GPU_DRIVER_OFFICIAL)) {
--    const Vector<std::string> matches = {
--        "RX550/550", "(TM) 520", "(TM) 530", "(TM) 535", "R5", "R7", "R9"};
-+    const Vector<std::string> matches = {"RX 460",
-+                                         "RX 470",
-+                                         "RX 480",
-+                                         "RX 490",
-+                                         "RX 560",
-+                                         "RX 560X",
-+                                         "RX 570",
-+                                         "RX 580",
-+                                         "RX 580X",
-+                                         "RX 590",
-+                                         "RX550/550",
-+                                         "(TM) 520",
-+                                         "(TM) 530",
-+                                         "(TM) 535",
-+                                         "R5",
-+                                         "R7",
-+                                         "R9"};
+     const Vector<std::string> matches = {
+-        "RX550/550", "(TM) 520", "(TM) 530", "(TM) 535", "R5", "R7", "R9", "HD"};
++	"RX 460", "RX 470", "RX 480", "RX 490", "RX 560", "RX 560X", "RX 570",
++	"RX 580", "RX 580X", "RX 590", "RX550/550", "(TM) 520", "(TM) 530",
++	"(TM) 535", "R5", "R7", "R9", "HD"};
  
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 66943111380..8c5d6faefd1 100644
+index 1f2018e1fea..78161b00fd5 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
 @@ -40,6 +40,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
-+link_directories(${LIBDIR}/bcompat7/lib)
++link_directories(${LIBDIR}/bcompat7/bin/lib)
 +list(INSERT LIB 0 bcompat7)
 +
  if(WIN32)
    list(APPEND INC ../../intern/utfconv)
  endif()
-@@ -1400,6 +1403,12 @@ elseif(WIN32)
+@@ -1491,6 +1494,12 @@ elseif(WIN32)
    if(PLATFORM_BUNDLED_LIBRARIES)
      windows_process_platform_bundled_libraries("${PLATFORM_BUNDLED_LIBRARIES}")
    endif()
 +
 +  install(
-+    FILES ${LIBDIR}/bcompat7/bin/bcompat7.dll
++    FILES ${LIBDIR}/bcompat7/bin/bin/bcompat7.dll
 +    DESTINATION "."
 +    CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel;Debug
 +  )
