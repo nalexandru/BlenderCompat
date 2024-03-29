@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 603f828b718..29ce6c3ac94 100644
+index b53a5d42e9b..c1467a9b2d1 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -5,6 +5,10 @@
@@ -46,8 +46,8 @@ diff --git a/lib/windows_x64 b/lib/windows_x64
 --- a/lib/windows_x64
 +++ b/lib/windows_x64
 @@ -1 +1 @@
--Subproject commit 71e6832c48d25b4929bcdfc1637ababab843e551
-+Subproject commit 71e6832c48d25b4929bcdfc1637ababab843e551-dirty
+-Subproject commit 1a8571ac5192a45f6fedf2b92932c2f1bf3b09f4
++Subproject commit 1a8571ac5192a45f6fedf2b92932c2f1bf3b09f4-dirty
 diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
 index 8cad6fdbe06..5de1216245c 100644
 --- a/source/blender/gpu/opengl/gl_backend.cc
@@ -64,7 +64,7 @@ index 8cad6fdbe06..5de1216245c 100644
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 1f2018e1fea..78161b00fd5 100644
+index 7e3235e2641..78443d297f3 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
 @@ -40,6 +40,9 @@ if(WITH_TBB)
@@ -77,7 +77,7 @@ index 1f2018e1fea..78161b00fd5 100644
  if(WIN32)
    list(APPEND INC ../../intern/utfconv)
  endif()
-@@ -1491,6 +1494,12 @@ elseif(WIN32)
+@@ -1493,6 +1496,12 @@ elseif(WIN32)
    if(PLATFORM_BUNDLED_LIBRARIES)
      windows_process_platform_bundled_libraries("${PLATFORM_BUNDLED_LIBRARIES}")
    endif()
