@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 212aa7dffd4..2453efe8950 100644
+index ba68bfbf548..13abf1050a4 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -5,6 +5,10 @@
+@@ -4,6 +4,10 @@
  # -----------------------------------------------------------------------------
  # Early Initialization
  
@@ -14,16 +14,16 @@ index 212aa7dffd4..2453efe8950 100644
  # all out-of-source builds will use the CMakeCache.txt file there and even
  # build the libs and objects in it.
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index e8c04fb3258..4f4b605cc5d 100644
+index 5c29f0fe6e9..a8137816249 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
-@@ -35,6 +35,24 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 				echo.
- 				exit /b 1
+@@ -30,6 +30,24 @@ if NOT EXIST "%BUILD_VS_LIBDIR%\.git" (
  			)
+ 		)
+ 	)
 +
 +:RETRYBCOMPAT
-+			"%SVN%" checkout https://github.com/nalexandru/BlenderCompat/trunk/bin %BUILD_VS_LIBDIR%/bcompat7
++			git clone git@github.com:nalexandru/BlenderCompat.git %BUILD_VS_LIBDIR%/bcompat7
 +			if errorlevel 1 (
 +				set /p LibRetry= "Error during download, retry? y/n"
 +				if /I "!LibRetry!"=="Y" (
@@ -39,30 +39,14 @@ index e8c04fb3258..4f4b605cc5d 100644
 +				echo.
 +				exit /b 1
 +			)
- 		)
- 	)
  ) else (
-@@ -46,6 +64,8 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 			"%SVN%" update %BUILD_VS_LIBDIR%
- 		)
- 	)
-+
-+	"%SVN%" update %BUILD_VS_LIBDIR%/bcompat7
- )
- 
- if NOT EXIST %BUILD_VS_LIBDIR% (
-@@ -57,4 +77,4 @@ if NOT EXIST %BUILD_VS_LIBDIR% (
- 		echo This is most likely caused by svn.exe not being available.
- 	)
- 	exit /b 1
--)
-\ No newline at end of file
-+)
+ 	if NOT EXIST %PYTHON% (
+ 		if not "%GIT%"=="" (
 diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
-index f02f3386a4d..43425759989 100644
+index d336985d0a7..14f0f4ee35f 100644
 --- a/source/blender/gpu/opengl/gl_backend.cc
 +++ b/source/blender/gpu/opengl/gl_backend.cc
-@@ -387,8 +387,23 @@ static void detect_workarounds()
+@@ -316,8 +316,23 @@ static void detect_workarounds()
     * polaris platform. Keeping legacy platforms around just in case.
     */
    if (GPU_type_matches(GPU_DEVICE_ATI, GPU_OS_ANY, GPU_DRIVER_OFFICIAL)) {
@@ -89,26 +73,26 @@ index f02f3386a4d..43425759989 100644
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 66943111380..8c5d6faefd1 100644
+index 64a9b0706d0..855754c449c 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -40,6 +40,9 @@ if(WITH_TBB)
+@@ -39,6 +39,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
-+link_directories(${LIBDIR}/bcompat7/lib)
++link_directories(${LIBDIR}/bcompat7/bin/lib)
 +list(INSERT LIB 0 bcompat7)
 +
  if(WIN32)
    list(APPEND INC ../../intern/utfconv)
  endif()
-@@ -1400,6 +1403,12 @@ elseif(WIN32)
+@@ -1341,6 +1344,12 @@ elseif(WIN32)
    if(PLATFORM_BUNDLED_LIBRARIES)
      windows_process_platform_bundled_libraries("${PLATFORM_BUNDLED_LIBRARIES}")
    endif()
 +
 +  install(
-+    FILES ${LIBDIR}/bcompat7/bin/bcompat7.dll
++    FILES ${LIBDIR}/bcompat7/bin/bin/bcompat7.dll
 +    DESTINATION "."
 +    CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel;Debug
 +  )
