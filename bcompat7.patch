@@ -1,25 +1,25 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index b53a5d42e9b..c1467a9b2d1 100644
+index 939aea906bc..6bb7b399f02 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -5,6 +5,10 @@
- # -----------------------------------------------------------------------------
- # Early Initialization
+@@ -6,6 +6,10 @@
+ # all out-of-source builds will use the CMakeCache.txt file there and even
+ # build the libs and objects in it.
  
 +if (WIN32)
 +	set(CMAKE_SYSTEM_VERSION 10.0 (latest installed version))
 +endif ()
 +
- # NOTE: We don't allow in-source builds. This causes no end of troubles because
- # all out-of-source builds will use the CMakeCache.txt file there and even
- # build the libs and objects in it.
+ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+   if(NOT DEFINED WITH_IN_SOURCE_BUILD)
+     message(FATAL_ERROR
 diff --git a/build_files/windows/check_libraries.cmd b/build_files/windows/check_libraries.cmd
-index 8c92ac72aa8..a1e811794f9 100644
+index 5c29f0fe6e9..a8137816249 100644
 --- a/build_files/windows/check_libraries.cmd
 +++ b/build_files/windows/check_libraries.cmd
-@@ -46,6 +46,24 @@ if NOT EXIST "%BUILD_VS_LIBDIR%\.git" (
-            exit /b 1
-         )
+@@ -30,6 +30,24 @@ if NOT EXIST "%BUILD_VS_LIBDIR%\.git" (
+ 			)
+ 		)
  	)
 +
 +:RETRYBCOMPAT
@@ -42,44 +42,53 @@ index 8c92ac72aa8..a1e811794f9 100644
  ) else (
  	if NOT EXIST %PYTHON% (
  		if not "%GIT%"=="" (
-diff --git a/lib/windows_x64 b/lib/windows_x64
---- a/lib/windows_x64
-+++ b/lib/windows_x64
-@@ -1 +1 @@
--Subproject commit 1a8571ac5192a45f6fedf2b92932c2f1bf3b09f4
-+Subproject commit 1a8571ac5192a45f6fedf2b92932c2f1bf3b09f4-dirty
 diff --git a/source/blender/gpu/opengl/gl_backend.cc b/source/blender/gpu/opengl/gl_backend.cc
-index 8cad6fdbe06..5de1216245c 100644
+index 4869bff2737..751d503e2d5 100644
 --- a/source/blender/gpu/opengl/gl_backend.cc
 +++ b/source/blender/gpu/opengl/gl_backend.cc
-@@ -374,7 +374,9 @@ static void detect_workarounds()
+@@ -293,8 +293,23 @@ static void detect_workarounds()
+    * polaris platform. Keeping legacy platforms around just in case.
     */
    if (GPU_type_matches(GPU_DEVICE_ATI, GPU_OS_ANY, GPU_DRIVER_OFFICIAL)) {
-     const Vector<std::string> matches = {
--        "RX550/550", "(TM) 520", "(TM) 530", "(TM) 535", "R5", "R7", "R9", "HD"};
-+	"RX 460", "RX 470", "RX 480", "RX 490", "RX 560", "RX 560X", "RX 570",
-+	"RX 580", "RX 580X", "RX 590", "RX550/550", "(TM) 520", "(TM) 530",
-+	"(TM) 535", "R5", "R7", "R9", "HD"};
+-    const Vector<std::string> matches = {
+-        "RX550/550", "(TM) 520", "(TM) 530", "(TM) 535", "R5", "R7", "R9"};
++    const Vector<std::string> matches = {"RX 460",
++                                         "RX 470",
++                                         "RX 480",
++                                         "RX 490",
++                                         "RX 560",
++                                         "RX 560X",
++                                         "RX 570",
++                                         "RX 580",
++                                         "RX 580X",
++                                         "RX 590",
++                                         "RX550/550",
++                                         "(TM) 520",
++                                         "(TM) 530",
++                                         "(TM) 535",
++                                         "R5",
++                                         "R7",
++                                         "R9"};
  
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 7e3235e2641..78443d297f3 100644
+index 119c9abfa69..5ea69db4efb 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -40,6 +40,9 @@ if(WITH_TBB)
+@@ -32,6 +32,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
-+link_directories(${LIBDIR}/bcompat7/bin/lib)
++link_directories(${LIBDIR}/bcompat7/lib)
 +list(INSERT LIB 0 bcompat7)
 +
  if(WIN32)
-   list(APPEND INC ../../intern/utfconv)
+   blender_include_dirs(../../intern/utfconv)
  endif()
-@@ -1493,6 +1496,12 @@ elseif(WIN32)
-   if(PLATFORM_BUNDLED_LIBRARIES)
-     windows_process_platform_bundled_libraries("${PLATFORM_BUNDLED_LIBRARIES}")
+@@ -1012,6 +1015,12 @@ elseif(WIN32)
+       DESTINATION ${TARGETDIR_VER}/python/lib/site-packages
+     )
    endif()
 +
 +  install(
@@ -89,4 +98,4 @@ index 7e3235e2641..78443d297f3 100644
 +  )
  elseif(APPLE)
    if(NOT WITH_PYTHON_MODULE)
-     # Uppercase name for app bundle.
+     # Uppercase name for app bundle
