@@ -73,14 +73,14 @@ index 4869bff2737..751d503e2d5 100644
      if (match_renderer(renderer, matches)) {
        GCaps.use_hq_normals_workaround = true;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 119c9abfa69..5ea69db4efb 100644
+index 119c9abfa69..3963ef53352 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
 @@ -32,6 +32,9 @@ if(WITH_TBB)
    list(INSERT LIB 0 bf_blenkernel)
  endif()
  
-+link_directories(${LIBDIR}/bcompat7/lib)
++link_directories(${LIBDIR}/bcompat7/bin/lib)
 +list(INSERT LIB 0 bcompat7)
 +
  if(WIN32)
